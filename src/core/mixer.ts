@@ -67,7 +67,6 @@ export function mixSubstances(product: Product, substanceCodes: Substance[]): Mi
       }
     }
 
-    // Add substance effects AFTER applying rules
     if (effectsSet.size() < MAX_EFFECTS && substance.effect) {
       for (const effect of substance.effect) {
         if (!effectsSet.has(effect)) {
@@ -80,7 +79,7 @@ export function mixSubstances(product: Product, substanceCodes: Substance[]): Mi
 
   const finalEffects = effectsSet.toArray().slice(0, MAX_EFFECTS);
   const effectValue = calculateEffectValue(finalEffects);
-  const addictionValue = calculateAddiction(finalEffects);
+  const addictionValue = calculateAddiction(product, finalEffects);
   const addiction = Math.round(addictionValue * 100) / 100;
   const sellPrice = Math.round(productInfo.price * (1 + effectValue));
   const profit = sellPrice - totalCost;
@@ -250,8 +249,8 @@ function calculateEffectValue(effectCodes: EffectCode[]): number {
  * @param effectCodes - The effects to calculate the value for
  * @returns The total addiction value
  */
-function calculateAddiction(effectCodes: EffectCode[]): number {
-  let value = 0;
+function calculateAddiction(product: Product, effectCodes: EffectCode[]): number {
+  let value = products[product]?.addiction || 0;
   for (const code of effectCodes) {
     value += effects[code]?.addiction || 0;
   }

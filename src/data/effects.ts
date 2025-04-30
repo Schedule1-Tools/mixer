@@ -1,6 +1,22 @@
 import type { EffectCode, EffectData } from '../types';
 
 export const effects: Record<EffectCode, EffectData> = {
+  Pa: {
+    name: 'Paranoia',
+    description: 'Induces paranoia in the user.',
+    tier: 1,
+    price: 0,
+    color: '#f87171',
+    addiction: 0,
+  },
+  Sm: {
+    name: 'Smelly',
+    description: 'Makes the user unbearably smelly.',
+    tier: 1,
+    price: 0,
+    color: '#84cc16',
+    addiction: 0,
+  },
   Ca: {
     name: 'Calming',
     description: 'Induces a slight calmness in the user.',
@@ -8,6 +24,14 @@ export const effects: Record<EffectCode, EffectData> = {
     price: 0.1,
     color: '#fdba74',
     addiction: 0,
+  },
+  Mu: {
+    name: 'Munchies',
+    description: 'Makes the user hungry.',
+    tier: 1,
+    price: 0.12,
+    color: '#C96E57',
+    addiction: 0.096,
   },
   Re: {
     name: 'Refreshing',
@@ -17,37 +41,13 @@ export const effects: Record<EffectCode, EffectData> = {
     color: '#bef264',
     addiction: 0.104,
   },
-  En: {
-    name: 'Energizing',
-    description: 'Increases the users energy.',
-    tier: 2,
-    price: 0.22,
-    color: '#a3e635',
-    addiction: 0.34,
-  },
-  Se: {
-    name: 'Sedating',
-    description: 'Induces heavy sleepiness in the user.',
-    tier: 2,
-    price: 0.26,
-    color: '#818cf8',
-    addiction: 0,
-  },
-  Be: {
-    name: 'Bright-Eyed',
-    description: "Causes the user's eyes to emit light.",
-    tier: 4,
-    price: 0.4,
-    color: '#67e8f9',
-    addiction: 0.2,
-  },
-  Cd: {
-    name: 'Calorie-Dense',
-    description: 'Results in immediate weight gain.',
-    tier: 2,
-    price: 0.28,
-    color: '#e879f9',
-    addiction: 0.1,
+  Fc: {
+    name: 'Focused',
+    description: "Focuses the user's mind.",
+    tier: 1,
+    price: 0.16,
+    color: '#75F1FD',
+    addiction: 0.104,
   },
   Eu: {
     name: 'Euphoric',
@@ -65,45 +65,13 @@ export const effects: Record<EffectCode, EffectData> = {
     color: '#a3e635',
     addiction: 0,
   },
-  At: {
-    name: 'Athletic',
-    description: 'After consumption, the user is only able to run.',
-    tier: 3,
-    price: 0.32,
-    color: '#7dd3fc',
-    addiction: 0.607,
-  },
-  Ba: {
-    name: 'Balding',
-    description: 'Causes balding in the user.',
-    tier: 3,
-    price: 0.3,
-    color: '#c79232',
+  Di: {
+    name: 'Disorienting',
+    description: 'Causes unpredictable movement and slight visual impairment in the user.',
+    tier: 2,
+    price: 0,
+    color: '#FE7551',
     addiction: 0,
-  },
-  Ag: {
-    name: 'Anti-Gravity',
-    description: 'Weakens the effects of gravity on the user.',
-    tier: 5,
-    price: 0.54,
-    color: '#3b82f6',
-    addiction: 0.611,
-  },
-  Mu: {
-    name: 'Munchies',
-    description: 'Makes the user hungry.',
-    tier: 1,
-    price: 0.12,
-    color: '#C96E57',
-    addiction: 0.096,
-  },
-  Sl: {
-    name: 'Slippery',
-    description: "Reduces the user's ability to maintain traction on the ground.",
-    tier: 3,
-    price: 0.34,
-    color: '#7dd3fc',
-    addiction: 0.309,
   },
   Gi: {
     name: 'Gingeritis',
@@ -113,6 +81,14 @@ export const effects: Record<EffectCode, EffectData> = {
     color: '#fb923c',
     addiction: 0,
   },
+  En: {
+    name: 'Energizing',
+    description: 'Increases the users energy.',
+    tier: 2,
+    price: 0.22,
+    color: '#a3e635',
+    addiction: 0.34,
+  },
   Sn: {
     name: 'Sneaky',
     description: 'Silences the users foot steps.',
@@ -121,13 +97,69 @@ export const effects: Record<EffectCode, EffectData> = {
     color: '#a8a29e',
     addiction: 0.327,
   },
-  Tp: {
-    name: 'Thought-Provoking',
-    description: "Increases the size of the user's head.",
-    tier: 4,
-    price: 0.44,
-    color: '#f9a8d4',
-    addiction: 0.37,
+  Se: {
+    name: 'Sedating',
+    description: 'Induces heavy sleepiness in the user.',
+    tier: 2,
+    price: 0.26,
+    color: '#818cf8',
+    addiction: 0,
+  },
+  Cd: {
+    name: 'Calorie-Dense',
+    description: 'Results in immediate weight gain.',
+    tier: 2,
+    price: 0.28,
+    color: '#e879f9',
+    addiction: 0.1,
+  },
+  La: {
+    name: 'Laxative',
+    description: 'Causes the user to fart and shit uncontrollably.',
+    tier: 3,
+    price: 0,
+    color: '#a16207',
+    addiction: 0.1,
+  },
+  Si: {
+    name: 'Seizure-Inducing',
+    description: 'Consumption results in an instant seizure.',
+    tier: 3,
+    price: 0,
+    color: '#FEE900',
+    addiction: 0,
+  },
+  Ba: {
+    name: 'Balding',
+    description: 'Causes balding in the user.',
+    tier: 3,
+    price: 0.3,
+    color: '#c79232',
+    addiction: 0,
+  },
+  At: {
+    name: 'Athletic',
+    description: 'After consumption, the user is only able to run.',
+    tier: 3,
+    price: 0.32,
+    color: '#7dd3fc',
+    addiction: 0.607,
+  },
+  Sl: {
+    name: 'Slippery',
+    description: "Reduces the user's ability to maintain traction on the ground.",
+    tier: 3,
+    price: 0.34,
+    color: '#7dd3fc',
+    addiction: 0.309,
+  },
+  Fo: {
+    name: 'Foggy',
+    description: 'Causes a cloud of fog to form around the user.',
+    tier: 3,
+    price: 0.36,
+    color: '#94a3b8',
+    addiction: 0.1,
   },
   Sp: {
     name: 'Spicy',
@@ -137,13 +169,37 @@ export const effects: Record<EffectCode, EffectData> = {
     color: '#f87171',
     addiction: 0.665,
   },
-  Pa: {
-    name: 'Paranoia',
-    description: 'Induces paranoia in the user.',
-    tier: 1,
+  Sc: {
+    name: 'Schizophrenia',
+    description: 'Induces hallucinations and unpredictable behaviour in the user.',
+    tier: 4,
     price: 0,
-    color: '#f87171',
+    color: '#645AFD',
     addiction: 0,
+  },
+  Be: {
+    name: 'Bright-Eyed',
+    description: "Causes the user's eyes to emit light.",
+    tier: 4,
+    price: 0.4,
+    color: '#67e8f9',
+    addiction: 0.2,
+  },
+  Je: {
+    name: 'Jennerising',
+    description: "Inverts the user's gender.",
+    tier: 4,
+    price: 0.42,
+    color: '#e879f9',
+    addiction: 0.343,
+  },
+  Tp: {
+    name: 'Thought-Provoking',
+    description: "Increases the size of the user's head.",
+    tier: 4,
+    price: 0.44,
+    color: '#f9a8d4',
+    addiction: 0.37,
   },
   Tt: {
     name: 'Tropic Thunder',
@@ -161,22 +217,6 @@ export const effects: Record<EffectCode, EffectData> = {
     color: '#85E459',
     addiction: 0.472,
   },
-  Cy: {
-    name: 'Cyclopean',
-    description: 'Causes the user to see with a single eye in the center of their forehead.',
-    tier: 5,
-    price: 0.56,
-    color: '#FEC174',
-    addiction: 0.1,
-  },
-  Fo: {
-    name: 'Foggy',
-    description: 'Causes a cloud of fog to form around the user.',
-    tier: 3,
-    price: 0.36,
-    color: '#94a3b8',
-    addiction: 0.1,
-  },
   Ex: {
     name: 'Explosive',
     description: 'Causes the user to explode shortly after consumption.',
@@ -184,30 +224,6 @@ export const effects: Record<EffectCode, EffectData> = {
     price: 0,
     color: '#ef4444',
     addiction: 0,
-  },
-  La: {
-    name: 'Laxative',
-    description: 'Causes the user to fart and shit uncontrollably.',
-    tier: 3,
-    price: 0,
-    color: '#a16207',
-    addiction: 0.1,
-  },
-  Lf: {
-    name: 'Long Faced',
-    description: "Considerably increases the size of the user's head and neck.",
-    tier: 5,
-    price: 0.52,
-    color: '#fde047',
-    addiction: 0.607,
-  },
-  Je: {
-    name: 'Jennerising',
-    description: "Inverts the user's gender.",
-    tier: 4,
-    price: 0.42,
-    color: '#e879f9',
-    addiction: 0.343,
   },
   El: {
     name: 'Electrifying',
@@ -218,29 +234,29 @@ export const effects: Record<EffectCode, EffectData> = {
     color: '#22d3ee',
     addiction: 0.235,
   },
-  Di: {
-    name: 'Disorienting',
-    description: 'Causes unpredictable movement and slight visual impairment in the user.',
-    tier: 2,
-    price: 0,
-    color: '#FE7551',
-    addiction: 0,
+  Lf: {
+    name: 'Long Faced',
+    description: "Considerably increases the size of the user's head and neck.",
+    tier: 5,
+    price: 0.52,
+    color: '#fde047',
+    addiction: 0.607,
   },
-  Sc: {
-    name: 'Schizophrenia',
-    description: 'Induces hallucinations and unpredictable behaviour in the user.',
-    tier: 4,
-    price: 0,
-    color: '#645AFD',
-    addiction: 0,
+  Ag: {
+    name: 'Anti-Gravity',
+    description: 'Weakens the effects of gravity on the user.',
+    tier: 5,
+    price: 0.54,
+    color: '#3b82f6',
+    addiction: 0.611,
   },
-  Si: {
-    name: 'Seizure-Inducing',
-    description: 'Consumption results in an instant seizure.',
-    tier: 3,
-    price: 0,
-    color: '#FEE900',
-    addiction: 0,
+  Cy: {
+    name: 'Cyclopean',
+    description: 'Causes the user to see with a single eye in the center of their forehead.',
+    tier: 5,
+    price: 0.56,
+    color: '#FEC174',
+    addiction: 0.1,
   },
   Zo: {
     name: 'Zombifying',
@@ -251,22 +267,6 @@ export const effects: Record<EffectCode, EffectData> = {
     color: '#71AB5D',
     addiction: 0.598,
   },
-  Fc: {
-    name: 'Focused',
-    description: "Focuses the user's mind.",
-    tier: 1,
-    price: 0.16,
-    color: '#75F1FD',
-    addiction: 0.104,
-  },
-  Sm: {
-    name: 'Smelly',
-    description: 'Makes the user unbearably smelly.',
-    tier: 1,
-    price: 0,
-    color: '#84cc16',
-    addiction: 0,
-  },
   Sh: {
     name: 'Shrinking',
     description: 'Shrinks the user.',
@@ -276,3 +276,21 @@ export const effects: Record<EffectCode, EffectData> = {
     addiction: 0.336,
   },
 };
+
+export const effectBits: Record<EffectCode, bigint> = Object.keys(effects)
+  .sort()
+  .reduce(
+    (acc, code, idx) => {
+      acc[code as EffectCode] = 1n << BigInt(idx);
+      return acc;
+    },
+    {} as Record<EffectCode, bigint>
+  );
+
+export const bitToEffect: Record<string, EffectCode> = Object.entries(effectBits).reduce(
+  (acc, [code, bit]) => {
+    acc[bit.toString()] = code as EffectCode;
+    return acc;
+  },
+  {} as Record<string, EffectCode>
+);

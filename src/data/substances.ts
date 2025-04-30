@@ -67,7 +67,7 @@ export const substances: Record<Substance, SubstanceData> = {
     price: 3,
     effect: ['Sn'],
   },
-  Viagra: {
+  Viagor: {
     abbreviation: 'L',
     rank: '2',
     price: 4,

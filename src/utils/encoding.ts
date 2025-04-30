@@ -1,5 +1,7 @@
 import type { MixState, Product, Substance } from '../types';
 
+import LZString from 'lz-string';
+
 import { products } from '../data/products';
 import { substanceAbbreviations, substances } from '../data/substances';
 
@@ -87,7 +89,6 @@ export function decodeMixState(hash: string): MixState | null {
  */
 export async function migrateMixHash(legacyHash: string): Promise<string | null> {
   try {
-    const LZString = await import('lz-string');
     const jsonStr = LZString.decompressFromBase64(legacyHash);
     if (!jsonStr) return null;
 

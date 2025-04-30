@@ -25,11 +25,13 @@ export const products: Record<Product, ProductData> = {
     price: 70,
     effects: [],
     abbreviation: 'MH',
+    addiction: 0.6,
   },
   Cocaine: {
     price: 150,
     effects: [],
     abbreviation: 'CE',
+    addiction: 0.4,
   },
 };
 

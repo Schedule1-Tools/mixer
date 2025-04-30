@@ -46,7 +46,7 @@ export type Substance =
   | 'Chili'
   | 'Iodine'
   | 'Paracetamol'
-  | 'Viagra'
+  | 'Viagor'
   | 'Horse Semen'
   | 'Mega Bean'
   | 'Addy'
@@ -95,6 +95,7 @@ export interface ProductData {
   price: number;
   effects: EffectCode[];
   abbreviation: string;
+  addiction?: number;
 }
 
 export interface EffectRule {

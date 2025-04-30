@@ -86,7 +86,6 @@ export const effectRulesBySubstance: Record<Substance, EffectRule[]> = {
     { ifPresent: ['Mu'], ifNotPresent: ['To'], replace: { Mu: 'To' } },
     { ifPresent: ['Sh'], ifNotPresent: ['Re'], replace: { Sh: 'Re' } },
     { ifPresent: ['Sn'], ifNotPresent: ['Be'], replace: { Sn: 'Be' } },
-    { ifPresent: ['Tp'], ifNotPresent: ['Fc'], replace: { Tp: 'Fc' } },
   ],
   Iodine: [
     { ifPresent: ['Ca'], ifNotPresent: ['Ba'], replace: { Ca: 'Ba' } },
@@ -108,7 +107,7 @@ export const effectRulesBySubstance: Record<Substance, EffectRule[]> = {
     { ifPresent: ['Sp'], ifNotPresent: ['Be'], replace: { Sp: 'Be' } },
     { ifPresent: ['To'], ifNotPresent: ['Tt'], replace: { To: 'Tt' } },
   ],
-  Viagra: [
+  Viagor: [
     { ifPresent: ['At'], ifNotPresent: ['Sn'], replace: { At: 'Sn' } },
     { ifPresent: ['Di'], ifNotPresent: ['To'], replace: { Di: 'To' } },
     { ifPresent: ['Eu'], ifNotPresent: ['Be'], replace: { Eu: 'Be' } },

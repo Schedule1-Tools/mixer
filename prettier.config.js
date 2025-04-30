@@ -11,7 +11,7 @@ module.exports = {
   arrowParens: 'always',
   proseWrap: 'preserve',
   endOfLine: 'auto',
-  importOrder: ['<TYPES>', '', '^../(.*)$', '^./(.*)$'],
+  importOrder: ['<TYPES>', '', '<THIRD_PARTY_MODULES>', '', '^../(.*)$', '^./(.*)$'],
   importOrderParserPlugins: ['typescript'],
   importOrderTypeScriptVersion: '5.0.0',
 };
