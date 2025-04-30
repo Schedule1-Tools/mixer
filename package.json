@@ -1,6 +1,6 @@
 {
   "name": "@schedule1-tools/mixer",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "A package for calculating substance mixes in Schedule 1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
