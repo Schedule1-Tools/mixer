@@ -75,7 +75,7 @@ export const substances: Record<Substance, SubstanceData> = {
   },
   'Horse Semen': {
     abbreviation: 'M',
-    rank: '13',
+    rank: '18',
     price: 9,
     effect: ['Lf'],
   },
@@ -87,7 +87,7 @@ export const substances: Record<Substance, SubstanceData> = {
   },
   Addy: {
     abbreviation: 'O',
-    rank: '12',
+    rank: '17',
     price: 9,
     effect: ['Tp'],
   },
