@@ -58,7 +58,8 @@ export type Product =
   | 'Green Crack'
   | 'Grandaddy Purple'
   | 'Meth'
-  | 'Cocaine';
+  | 'Cocaine'
+  | 'Shrooms';
 
 export type RankCode =
   | '1'

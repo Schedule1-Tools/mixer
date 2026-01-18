@@ -39,6 +39,13 @@ export const products: Record<Product, ProductData> = {
     abbreviation: 'CE',
     addiction: 0.4,
   },
+  Shrooms: {
+    price: 65,
+    rank: '10',
+    effects: [],
+    abbreviation: 'SR',
+    addiction: 0.05,
+  },
 };
 
 export const productAbbreviations: Record<string, Product> = Object.entries(products).reduce(
