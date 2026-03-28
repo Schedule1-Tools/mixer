@@ -15,7 +15,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "test": "bun jest",
     "test:coverage": "bun jest --coverage",
     "prepublishOnly": "bun run test && bun run build",

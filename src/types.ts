@@ -58,7 +58,8 @@ export type Product =
   | 'Green Crack'
   | 'Grandaddy Purple'
   | 'Meth'
-  | 'Cocaine';
+  | 'Cocaine'
+  | 'Shrooms';
 
 export type RankCode =
   | '1'
@@ -73,7 +74,20 @@ export type RankCode =
   | '10'
   | '11'
   | '12'
-  | '13';
+  | '13'
+  | '14'
+  | '15'
+  | '16'
+  | '17'
+  | '18'
+  | '19'
+  | '20'
+  | '21'
+  | '22'
+  | '23'
+  | '24'
+  | '25'
+  | '26';
 
 export interface EffectData {
   name: string;
@@ -96,6 +110,7 @@ export interface ProductData {
   effects: EffectCode[];
   abbreviation: string;
   addiction?: number;
+  rank: RankCode;
 }
 
 export interface EffectRule {

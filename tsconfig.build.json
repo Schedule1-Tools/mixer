@@ -3,13 +3,16 @@
     "target": "ES2021",
     "module": "ES2022",
     "moduleResolution": "bundler",
+    "declaration": true,
+    "declarationMap": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["bun-types", "jest"],
-    "noEmit": true
+    "types": ["bun-types"]
   },
-  "include": ["src", "tests", "scripts"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

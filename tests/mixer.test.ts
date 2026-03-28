@@ -51,4 +51,21 @@ describe('mixSubstances edge cases', () => {
     expect(result.effects).toContain('En'); // From 'Cuke'
     expect(result.effects).toContain('Se'); // From 'Flu Medicine'
   });
+
+  test('should process Shrooms product correctly', () => {
+    const result = mixSubstances('Shrooms', []);
+    expect(result.effects).toEqual([]);
+    expect(result.cost).toBe(0);
+    expect(result.sellPrice).toBe(65);
+    expect(result.profit).toBe(65);
+    expect(result.addiction).toBe(0.05);
+  });
+
+  test('should process Shrooms with substances', () => {
+    const result = mixSubstances('Shrooms', ['Cuke']);
+    expect(result.effects).toContain('En');
+    expect(result.cost).toBe(2);
+    expect(result.sellPrice).toBeGreaterThan(65);
+    expect(result.addiction).toBeGreaterThanOrEqual(0.05);
+  });
 });

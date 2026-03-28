@@ -3,35 +3,48 @@ import type { Product, ProductData } from '../types';
 export const products: Record<Product, ProductData> = {
   'OG Kush': {
     price: 35,
+    rank: '1',
     effects: ['Ca'],
     abbreviation: 'OH',
   },
   'Sour Diesel': {
     price: 35,
+    rank: '4',
     effects: ['Re'],
     abbreviation: 'SL',
   },
   'Green Crack': {
     price: 35,
+    rank: '7',
     effects: ['En'],
     abbreviation: 'GK',
   },
   'Grandaddy Purple': {
     price: 35,
+    rank: '9',
     effects: ['Se'],
     abbreviation: 'GE',
   },
   Meth: {
     price: 70,
+    rank: '6',
     effects: [],
     abbreviation: 'MH',
     addiction: 0.6,
   },
   Cocaine: {
     price: 150,
+    rank: '26',
     effects: [],
     abbreviation: 'CE',
     addiction: 0.4,
+  },
+  Shrooms: {
+    price: 65,
+    rank: '10',
+    effects: [],
+    abbreviation: 'SR',
+    addiction: 0.05,
   },
 };
 
