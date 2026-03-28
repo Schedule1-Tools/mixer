@@ -1,16 +1,23 @@
 {
   "name": "@schedule1-tools/mixer",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A package for calculating substance mixes in Schedule 1",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "bun scripts/build.ts",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
+    "build": "tsc",
+    "test": "bun jest",
+    "test:coverage": "bun jest --coverage",
     "prepublishOnly": "bun run test && bun run build",
     "format": "prettier --write ."
   },
