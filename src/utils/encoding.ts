@@ -6,10 +6,8 @@ import { products } from '../data/products';
 import { substanceAbbreviations, substances } from '../data/substances';
 
 /**
- * Encode a mix state into a URL-safe string
- * @param state - The mix state to encode
- * @returns The URL-safe string
- * @throws Error if the product type or any substance code is invalid
+ * Encodes a mix state to a shareable URL-safe string.
+ * Throws if the product or any substance is invalid.
  */
 export function encodeMixState(state: MixState): string {
   if (!products[state.product]) {
@@ -35,9 +33,8 @@ export function encodeMixState(state: MixState): string {
 }
 
 /**
- * Decode a mix state from a URL-safe string
- * @param hash - The URL-safe string to decode
- * @returns The decoded MixState or null if invalid
+ * Decodes a URL-safe string back into a MixState.
+ * Returns null if the hash is invalid or unrecognized.
  */
 export function decodeMixState(hash: string): MixState | null {
   if (!hash || typeof hash !== 'string') {
@@ -77,15 +74,14 @@ export function decodeMixState(hash: string): MixState | null {
       product: product as Product,
       substances: subs,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }
 
 /**
- * Migrates an old format mix hash to the new format
- * @param legacyHash - The old format hash to migrate
- * @returns The mix state in the new hash format, or null if migration failed
+ * Migrates a legacy LZ-compressed hash to the current format.
+ * Returns null if migration fails.
  */
 export async function migrateMixHash(legacyHash: string): Promise<string | null> {
   try {
@@ -124,11 +120,6 @@ export async function migrateMixHash(legacyHash: string): Promise<string | null>
   }
 }
 
-/**
- * Convert a string to a URL-safe base64 string
- * @param str - The string to convert
- * @returns The URL-safe base64 string
- */
 function toBase64Url(str: string): string {
   return Buffer.from(str, 'utf-8')
     .toString('base64')
@@ -137,11 +128,6 @@ function toBase64Url(str: string): string {
     .replace(/=/g, '');
 }
 
-/**
- * Convert a URL-safe base64 string back to a regular string
- * @param str - The URL-safe base64 string to convert
- * @returns The regular string
- */
 function fromBase64Url(str: string): string {
   if (typeof str !== 'string') {
     throw new Error('Input must be a string');

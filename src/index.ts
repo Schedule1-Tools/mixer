@@ -1,10 +1,11 @@
 export { encodeMixState, decodeMixState, migrateMixHash } from './utils/encoding';
+
 export { mixSubstances, mixFromHash } from './core/mixer';
 
-export { effects } from './data/effects';
 export { products, productAbbreviations } from './data/products';
-export { substances } from './data/substances';
 export { effectRulesBySubstance } from './data/rules';
+export { substances } from './data/substances';
+export { effects } from './data/effects';
 
 export type {
   EffectCode,

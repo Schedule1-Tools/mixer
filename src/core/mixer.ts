@@ -5,15 +5,58 @@ import { products } from '../data/products';
 import { effectRulesBySubstance } from '../data/rules';
 import { substances } from '../data/substances';
 import { decodeMixState } from '../utils/encoding';
-import { EffectSet } from './effectSet';
+import { EFFECT_INDEX, EffectSet } from './effectSet';
 
 const MAX_EFFECTS = 8;
 
+// Rules are stored as string codes in rules.ts for readability.
+// At load time we compile them to integer indices so the hot path is pure bit ops.
+interface CompiledRule {
+  ifPresent: number;
+  ifNotPresent: number;
+  replaceFrom: number;
+  replaceTo: number;
+}
+
+const compiledRulesBySubstance = (() => {
+  const out = Object.create(null) as Record<Substance, CompiledRule[]>;
+  for (const sub in effectRulesBySubstance) {
+    const rules = effectRulesBySubstance[sub as Substance] as EffectRule[];
+    out[sub as Substance] = rules.map((r) => ({
+      ifPresent: EFFECT_INDEX[r.ifPresent[0]],
+      ifNotPresent: EFFECT_INDEX[r.ifNotPresent[0]],
+      replaceFrom: EFFECT_INDEX[Object.keys(r.replace)[0] as EffectCode],
+      replaceTo: EFFECT_INDEX[Object.values(r.replace)[0] as EffectCode],
+    }));
+  }
+  return out;
+})();
+
+const substanceEffectIndices = (() => {
+  const out = Object.create(null) as Record<Substance, number[]>;
+  for (const sub in substances) {
+    out[sub as Substance] = substances[sub as Substance].effect.map((e) => EFFECT_INDEX[e]);
+  }
+  return out;
+})();
+
+// Typed arrays for cache-friendly price/addiction lookups by effect index.
+const EFFECT_COUNT = 34;
+const effectPrices = new Float64Array(EFFECT_COUNT);
+const effectAddictions = new Float64Array(EFFECT_COUNT);
+for (const code in effects) {
+  const idx = EFFECT_INDEX[code as EffectCode];
+  effectPrices[idx] = effects[code as EffectCode].price;
+  effectAddictions[idx] = effects[code as EffectCode].addiction;
+}
+
+function hasBit(lo: number, hi: number, idx: number): boolean {
+  return idx < 32 ? (lo & (1 << idx)) !== 0 : (hi & (1 << (idx - 32))) !== 0;
+}
+
 /**
- * Calculate the result of mixing substances with a product
- * @param product - The product to mix
- * @param substanceCodes - The substances to mix
- * @returns The result of the mix
+ * Mixes a list of substances into a product and returns the resulting effects,
+ * sell price, profit, and addiction value.
  */
 export function mixSubstances(product: Product, substanceCodes: Substance[]): MixResult {
   if (!products[product]) {
@@ -30,47 +73,51 @@ export function mixSubstances(product: Product, substanceCodes: Substance[]): Mi
 
     totalCost += substance.price;
 
-    const rules = effectRulesBySubstance[code];
+    const rules = compiledRulesBySubstance[code];
     if (rules && rules.length > 0) {
-      const initialEffects = effectsSet.clone();
-      const processedEffects = new EffectSet();
-      const removedEffects = new EffectSet();
-      const appliedRules = new Set<number>();
+      // Snapshot the current state as plain ints to avoid a clone() allocation.
+      const initLo = effectsSet.lo;
+      const initHi = effectsSet.hi;
+      let removedLo = 0;
+      let removedHi = 0;
+      let appliedRules = 0; // bit i = rule i fired in phase 1
 
-      // Phase 1: Apply rules where conditions are met in the initial state
+      // Phase 1: apply rules whose conditions are met right now.
       for (let i = 0; i < rules.length; i++) {
         const rule = rules[i];
-
-        if (checkRulePreconditions(rule, initialEffects)) {
-          applyReplaceEffects(
-            rule.replace,
-            initialEffects,
-            effectsSet,
-            processedEffects,
-            removedEffects
-          );
-          appliedRules.add(i);
+        if (
+          hasBit(initLo, initHi, rule.ifPresent) &&
+          !hasBit(initLo, initHi, rule.ifNotPresent) &&
+          hasBit(initLo, initHi, rule.replaceFrom)
+        ) {
+          effectsSet.removeBit(rule.replaceFrom);
+          effectsSet.addBit(rule.replaceTo);
+          if (rule.replaceFrom < 32) removedLo |= 1 << rule.replaceFrom;
+          else removedHi |= 1 << (rule.replaceFrom - 32);
+          appliedRules |= 1 << i;
         }
       }
 
-      // Phase 2: Apply rules where conditions are met after phase 1
+      // Phase 2: apply rules that were blocked by a now-removed effect.
       for (let i = 0; i < rules.length; i++) {
-        if (appliedRules.has(i)) continue;
-
+        if (appliedRules & (1 << i)) continue;
         const rule = rules[i];
-
-        if (meetsPhaseTwo(rule, initialEffects, effectsSet, removedEffects)) {
-          if (canApplyTransformation(rule.replace, effectsSet)) {
-            applyTransformations(rule.replace, effectsSet, processedEffects);
-          }
+        if (
+          hasBit(initLo, initHi, rule.ifPresent) &&
+          hasBit(removedLo, removedHi, rule.ifNotPresent) &&
+          !hasBit(effectsSet.lo, effectsSet.hi, rule.ifNotPresent) &&
+          hasBit(effectsSet.lo, effectsSet.hi, rule.replaceFrom)
+        ) {
+          effectsSet.removeBit(rule.replaceFrom);
+          effectsSet.addBit(rule.replaceTo);
         }
       }
     }
 
-    if (effectsSet.size() < MAX_EFFECTS && substance.effect) {
-      for (const effect of substance.effect) {
-        if (!effectsSet.has(effect)) {
-          effectsSet.add(effect);
+    if (effectsSet.size() < MAX_EFFECTS) {
+      for (const idx of substanceEffectIndices[code]) {
+        if (!effectsSet.hasBit(idx)) {
+          effectsSet.addBit(idx);
           if (effectsSet.size() >= MAX_EFFECTS) break;
         }
       }
@@ -96,9 +143,8 @@ export function mixSubstances(product: Product, substanceCodes: Substance[]): Mi
 }
 
 /**
- * Mix substances from a hash
- * @param hash - The hash to mix
- * @returns The result of the mix
+ * Decodes a hash and runs it through mixSubstances.
+ * Throws if the hash is invalid.
  */
 export function mixFromHash(hash: string): MixResult {
   const state = decodeMixState(hash);
@@ -108,151 +154,14 @@ export function mixFromHash(hash: string): MixResult {
   return mixSubstances(state.product, state.substances);
 }
 
-/**
- * Check if a rule's preconditions are met
- * @param rule - The rule to check
- * @param initialEffects - The initial effects
- * @returns True if the preconditions are met, false otherwise
- */
-function checkRulePreconditions(rule: EffectRule, initialEffects: EffectSet): boolean {
-  // Check if all required effects are present
-  for (const effect of rule.ifPresent) {
-    if (!initialEffects.has(effect)) return false;
-  }
-
-  // Check if all forbidden effects are absent
-  for (const effect of rule.ifNotPresent) {
-    if (initialEffects.has(effect)) return false;
-  }
-
-  // Check if at least one replaceable effect is present
-  for (const oldEffect of Object.keys(rule.replace) as EffectCode[]) {
-    if (initialEffects.has(oldEffect)) return true;
-  }
-
-  return false;
-}
-
-/**
- * Check if a rule meets phase two conditions
- * @param rule - The rule to check
- * @param initialEffects - The initial effects
- * @param currentEffects - The current effects
- * @param removedEffects - The removed effects
- * @returns True if the rule meets the conditions, false otherwise
- */
-function meetsPhaseTwo(
-  rule: EffectRule,
-  initialEffects: EffectSet,
-  currentEffects: EffectSet,
-  removedEffects: EffectSet
-): boolean {
-  // All required effects must have been initially present
-  for (const effect of rule.ifPresent) {
-    if (!initialEffects.has(effect)) return false;
-  }
-
-  // At least one forbidden effect must have been removed
-  let hasRemovedForbidden = false;
-  for (const effect of rule.ifNotPresent) {
-    if (removedEffects.has(effect)) {
-      hasRemovedForbidden = true;
-      break;
-    }
-  }
-  if (!hasRemovedForbidden) return false;
-
-  // All forbidden effects must be absent from current set
-  for (const effect of rule.ifNotPresent) {
-    if (currentEffects.has(effect)) return false;
-  }
-
-  return true;
-}
-
-/**
- * Apply effect replacements
- * @param replace - The replacements to apply
- * @param initialEffects - The initial effects
- * @param effectsSet - The effects set
- * @param processedEffects - The processed effects
- * @param removedEffects - The removed effects
- */
-function applyReplaceEffects(
-  replace: Partial<Record<EffectCode, EffectCode>>,
-  initialEffects: EffectSet,
-  effectsSet: EffectSet,
-  processedEffects: EffectSet,
-  removedEffects: EffectSet
-): void {
-  for (const [oldEffect, newEffect] of Object.entries(replace) as [EffectCode, EffectCode][]) {
-    if (initialEffects.has(oldEffect)) {
-      effectsSet.remove(oldEffect);
-      effectsSet.add(newEffect);
-      processedEffects.add(oldEffect);
-      removedEffects.add(oldEffect);
-    }
-  }
-}
-
-/**
- * Check if a transformation can be applied
- * @param replace - The replacements to apply
- * @param effectsSet - The effects set
- * @returns True if the transformation can be applied, false otherwise
- */
-function canApplyTransformation(
-  replace: Partial<Record<EffectCode, EffectCode>>,
-  effectsSet: EffectSet
-): boolean {
-  for (const oldEffect of Object.keys(replace) as EffectCode[]) {
-    if (effectsSet.has(oldEffect)) return true;
-  }
-  return false;
-}
-
-/**
- * Apply transformations to effects
- * @param replace - The replacements to apply
- * @param effectsSet - The effects set
- * @param processedEffects - The processed effects
- */
-function applyTransformations(
-  replace: Partial<Record<EffectCode, EffectCode>>,
-  effectsSet: EffectSet,
-  processedEffects: EffectSet
-): void {
-  for (const [oldEffect, newEffect] of Object.entries(replace) as [EffectCode, EffectCode][]) {
-    if (effectsSet.has(oldEffect)) {
-      effectsSet.remove(oldEffect);
-      effectsSet.add(newEffect);
-      processedEffects.add(oldEffect);
-    }
-  }
-}
-
-/**
- * Calculate the total value multiplier from effects
- * @param effectCodes - The effects to calculate the value for
- * @returns The total value multiplier
- */
 function calculateEffectValue(effectCodes: EffectCode[]): number {
   let value = 0;
-  for (const code of effectCodes) {
-    value += effects[code]?.price || 0;
-  }
+  for (const code of effectCodes) value += effectPrices[EFFECT_INDEX[code]];
   return value;
 }
 
-/**
- * Calculate the total addiction value from effects
- * @param effectCodes - The effects to calculate the value for
- * @returns The total addiction value
- */
 function calculateAddiction(product: Product, effectCodes: EffectCode[]): number {
   let value = products[product]?.addiction || 0;
-  for (const code of effectCodes) {
-    value += effects[code]?.addiction || 0;
-  }
+  for (const code of effectCodes) value += effectAddictions[EFFECT_INDEX[code]];
   return value;
 }

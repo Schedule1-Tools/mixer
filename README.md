@@ -34,10 +34,7 @@ import { mixSubstances } from '@schedule1-tools/mixer';
  * mixSubstances(product: Product, substances: Substance[])
  * → computes cost, effects, profit, profitMargin, addiction
  */
-const result = mixSubstances(
-  'OG Kush',
-  ['Cuke', 'Flu Medicine', 'Gasoline']
-);
+const result = mixSubstances('OG Kush', ['Cuke', 'Flu Medicine', 'Gasoline']);
 // result → {
 //   effects:      ['Be','Se','Eu','To'],
 //   cost:         12,
@@ -71,18 +68,15 @@ const result = mixFromHash('T0cgS3VzaDpBQkM');
 ### 3. Encode & decode mix state
 
 ```typescript
-import {
-  encodeMixState,
-  decodeMixState
-} from '@schedule1-tools/mixer';
+import { decodeMixState, encodeMixState } from '@schedule1-tools/mixer';
 
 /**
  * encodeMixState(state: MixState) → string
  * decodeMixState(hash: string) → MixState
  */
 const encoded = encodeMixState({
-  product:    'OG Kush',
-  substances: ['Cuke','Flu Medicine','Gasoline']
+  product: 'OG Kush',
+  substances: ['Cuke', 'Flu Medicine', 'Gasoline'],
 });
 // encoded → 'T0cgS3VzaDpBQkM'
 
@@ -109,28 +103,23 @@ const newHash = await migrateMixHash('OLD_BASE64_HASH_HERE');
 
 In addition to the functions above, the package also exports data objects:
 
-- `effects`: All effect definitions  
-- `products`: All product definitions  
-- `substances`: All substance definitions  
-- `effectRulesBySubstance`: Transformation rules for each substance  
+- `effects`: All effect definitions
+- `products`: All product definitions
+- `substances`: All substance definitions
+- `effectRulesBySubstance`: Transformation rules for each substance
 
 ```typescript
-import {
-  effects,
-  products,
-  substances,
-  effectRulesBySubstance
-} from '@schedule1-tools/mixer';
+import { effectRulesBySubstance, effects, products, substances } from '@schedule1-tools/mixer';
 ```
 
 ---
 
 ## Contributing
 
-1. Fork the repo  
-2. Create a branch (`git checkout -b feat/my-feature`)  
-3. Run tests & lint (`pnpm test && pnpm run format`)  
-4. Open a PR against `main`  
+1. Fork the repo
+2. Create a branch (`git checkout -b feat/my-feature`)
+3. Run tests & lint (`pnpm test && pnpm run format`)
+4. Open a PR against `main`
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) (if present) for more details.
 

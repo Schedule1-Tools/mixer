@@ -1,66 +1,123 @@
 import type { EffectCode } from '../types';
 
+// All 34 effect codes in alphabetical order.
+// Effects 0-31 map to `lo`, effects 32-33 (Tt, Zo) map to `hi`.
+const EFFECT_CODES: EffectCode[] = [
+  'Ag',
+  'At',
+  'Ba',
+  'Be',
+  'Ca',
+  'Cd',
+  'Cy',
+  'Di',
+  'El',
+  'En',
+  'Eu',
+  'Ex',
+  'Fc',
+  'Fo',
+  'Gi',
+  'Gl',
+  'Je',
+  'La',
+  'Lf',
+  'Mu',
+  'Pa',
+  'Re',
+  'Sc',
+  'Se',
+  'Sh',
+  'Si',
+  'Sl',
+  'Sm',
+  'Sn',
+  'Sp',
+  'To',
+  'Tp',
+  'Tt',
+  'Zo',
+];
+
+export const EFFECT_INDEX: Record<EffectCode, number> = Object.create(null);
+for (let i = 0; i < EFFECT_CODES.length; i++) {
+  EFFECT_INDEX[EFFECT_CODES[i]] = i;
+}
+
 export class EffectSet {
-  private effects: Set<EffectCode>;
+  /** bitmask for effects 0-31 */
+  lo = 0;
+  /** bitmask for effects 32-33 (Tt, Zo) */
+  hi = 0;
+  private _size = 0;
+  /** effect indices in insertion order, used by toArray() */
+  private _order: number[] = [];
 
   constructor(initialEffects: EffectCode[] = []) {
-    this.effects = new Set(initialEffects);
+    for (const e of initialEffects) this.add(e);
   }
 
-  /**
-   * Add an effect to the set
-   * @param effect - The effect to add
-   * @returns True if the effect was added, false if it already exists
-   */
-  add(effect: EffectCode): boolean {
-    const alreadyExists = this.effects.has(effect);
-    this.effects.add(effect);
-    return !alreadyExists;
-  }
-
-  /**
-   * Remove an effect from the set
-   * @param effect - The effect to remove
-   * @returns True if the effect was removed, false if it didn't exist
-   */
-  remove(effect: EffectCode): boolean {
-    const existed = this.effects.has(effect);
-    this.effects.delete(effect);
-    return existed;
-  }
-
-  /**
-   * Check if the set contains an effect
-   * @param effect - The effect to check for
-   * @returns True if the effect is in the set, false otherwise
-   */
   has(effect: EffectCode): boolean {
-    return this.effects.has(effect);
+    return this.hasBit(EFFECT_INDEX[effect]);
   }
 
-  /**
-   * Convert the set to an array
-   * @returns An array of effects
-   */
-  toArray(): EffectCode[] {
-    return Array.from(this.effects);
+  hasBit(idx: number): boolean {
+    return idx < 32 ? (this.lo & (1 << idx)) !== 0 : (this.hi & (1 << (idx - 32))) !== 0;
   }
 
-  /**
-   * Get the size of the set
-   * @returns The number of effects in the set
-   */
+  add(effect: EffectCode): boolean {
+    return this.addBit(EFFECT_INDEX[effect]);
+  }
+
+  addBit(idx: number): boolean {
+    if (idx < 32) {
+      const bit = 1 << idx;
+      if (this.lo & bit) return false;
+      this.lo |= bit;
+    } else {
+      const bit = 1 << (idx - 32);
+      if (this.hi & bit) return false;
+      this.hi |= bit;
+    }
+    this._size++;
+    this._order.push(idx);
+    return true;
+  }
+
+  remove(effect: EffectCode): boolean {
+    return this.removeBit(EFFECT_INDEX[effect]);
+  }
+
+  removeBit(idx: number): boolean {
+    if (idx < 32) {
+      const bit = 1 << idx;
+      if (!(this.lo & bit)) return false;
+      this.lo &= ~bit;
+    } else {
+      const bit = 1 << (idx - 32);
+      if (!(this.hi & bit)) return false;
+      this.hi &= ~bit;
+    }
+    this._size--;
+    const i = this._order.indexOf(idx);
+    if (i !== -1) this._order.splice(i, 1);
+    return true;
+  }
+
   size(): number {
-    return this.effects.size;
+    return this._size;
   }
 
-  /**
-   * Clone the set
-   * @returns A new set with the same effects
-   */
+  toArray(): EffectCode[] {
+    return this._order.map((i) => EFFECT_CODES[i]);
+  }
+
   clone(): EffectSet {
-    const clone = new EffectSet();
-    clone.effects = new Set(this.effects);
-    return clone;
+    const c = new EffectSet();
+    c.lo = this.lo;
+    c.hi = this.hi;
+    c._size = this._size;
+    c._order = this._order.slice();
+    return c;
   }
 }

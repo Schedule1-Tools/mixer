@@ -1,17 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es2021",
-    "module": "commonjs",
-    "declaration": true,
-    "outDir": "./dist",
+    "target": "ES2021",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "removeComments": true,
-    "esModuleInterop": true,
+    "jsx": "react-jsx",
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "types": ["bun-types", "jest"],
+    "outDir": "./dist",
+    "composite": true,
+    "esModuleInterop": true,
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+  "exclude": ["node_modules", "dist"],
 }
