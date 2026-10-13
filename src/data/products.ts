@@ -41,7 +41,7 @@ export const products: Record<Product, ProductData> = {
   },
   Shrooms: {
     price: 65,
-    rank: '10',
+    rank: '16',
     effects: [],
     abbreviation: 'SR',
     addiction: 0.05,

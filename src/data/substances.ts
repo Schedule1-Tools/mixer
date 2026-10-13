@@ -9,13 +9,13 @@ export const substances: Record<Substance, SubstanceData> = {
   },
   'Flu Medicine': {
     abbreviation: 'B',
-    rank: '4',
+    rank: '9',
     price: 5,
     effect: ['Se'],
   },
   Gasoline: {
     abbreviation: 'C',
-    rank: '5',
+    rank: '10',
     price: 5,
     effect: ['To'],
   },
@@ -27,19 +27,19 @@ export const substances: Record<Substance, SubstanceData> = {
   },
   'Energy Drink': {
     abbreviation: 'E',
-    rank: '6',
+    rank: '11',
     price: 6,
     effect: ['At'],
   },
   'Mouth Wash': {
     abbreviation: 'F',
-    rank: '3',
+    rank: '8',
     price: 4,
     effect: ['Ba'],
   },
   'Motor Oil': {
     abbreviation: 'G',
-    rank: '7',
+    rank: '12',
     price: 6,
     effect: ['Sl'],
   },
@@ -51,13 +51,13 @@ export const substances: Record<Substance, SubstanceData> = {
   },
   Chili: {
     abbreviation: 'I',
-    rank: '9',
+    rank: '14',
     price: 7,
     effect: ['Sp'],
   },
   Iodine: {
     abbreviation: 'J',
-    rank: '11',
+    rank: '16',
     price: 8,
     effect: ['Je'],
   },
@@ -69,7 +69,7 @@ export const substances: Record<Substance, SubstanceData> = {
   },
   Viagor: {
     abbreviation: 'L',
-    rank: '2',
+    rank: '7',
     price: 4,
     effect: ['Tt'],
   },
@@ -81,7 +81,7 @@ export const substances: Record<Substance, SubstanceData> = {
   },
   'Mega Bean': {
     abbreviation: 'N',
-    rank: '8',
+    rank: '13',
     price: 7,
     effect: ['Fo'],
   },
@@ -93,7 +93,7 @@ export const substances: Record<Substance, SubstanceData> = {
   },
   Battery: {
     abbreviation: 'P',
-    rank: '10',
+    rank: '15',
     price: 8,
     effect: ['Be'],
   },
